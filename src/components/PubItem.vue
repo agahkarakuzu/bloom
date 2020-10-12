@@ -70,7 +70,7 @@ export default {
     },
     styleAuthor(author) {
       var style = {}; // Replace with your own family name !
-      if (author['family'] == 'DuPre') {
+      if (author['family'] == 'Karakuzu') {
         style.color = 'black',
         style.textDecoration = 'underline'
       }
