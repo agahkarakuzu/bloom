@@ -36,7 +36,7 @@ export default {
     };
   },
   mounted() {
-    this.getOrcid('0000-0003-1358-196X');  // Replace with your own ORCID !
+    this.getOrcid('0000-0001-7283-271X');  // Replace with your own ORCID !
   },
   methods: {
     getOrcid(orcid) {
