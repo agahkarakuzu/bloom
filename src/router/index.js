@@ -22,7 +22,7 @@ export default new Router({
     {
       path: '/cv',
       name: 'CV',
-      component: CV
+      beforeEnter() {location.href = 'https://github.com/agahkarakuzu/agahkarakuzu.github.io/blob/master/karakuzu_CV_sep2022.pdf'}
     },
     {
       path: '/pubs',
