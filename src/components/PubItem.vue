@@ -68,9 +68,24 @@ export default {
           headers: new Headers({'accept': 'application/json'})
       };
       fetch(`https://api.crossref.org/works/${doi}`, options)
-      .then((resp) => resp.json())
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return resp.json();
+      })
       .then(data => {
-        this.authorList = data.message.author;
+        // Check if authors exist and are in the expected format
+        if (data.message && Array.isArray(data.message.author)) {
+          this.authorList = data.message.author;
+        } else {
+          console.warn('No authors found for this DOI:', doi);
+          this.authorList = []; // Set to empty if no authors found
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        this.authorList = []; // Set to empty on error
       });
     },
     styleAuthor(author) {
