@@ -6,8 +6,9 @@
       <a class="mb-1" :href="pub['url']['value']" target="_blank">
         {{ pub['title']['title']['value'] }}
       </a>
+      <button @click="toggleAuthors">{{ showAuthors ? 'Hide Authors' : 'Show Authors' }}</button> <!-- Toggle button -->
     </div>
-    <div>
+    <div v-if="showAuthors"> <!-- Conditional rendering based on showAuthors -->
       <template v-for="(author, index) in authorList">
         <span v-bind:key="index" :style="styleAuthor(author)">{{ author['given'].charAt(0) }} {{ author['family'] }}</span><!--
         --><span>{{ index == authorList.length - 1 ? '.': ', ' }}</span>
@@ -46,6 +47,7 @@ export default {
       works: [],
       loading: true,
       authorList: [],
+      showAuthors: false, // New data property to control visibility
     };
   },
   mounted() {
@@ -57,6 +59,9 @@ export default {
     document.head.appendChild(dimensionScript)
   },
   methods: {
+    toggleAuthors() { // New method to toggle author visibility
+      this.showAuthors = !this.showAuthors;
+    },
     getCrossref(doi) {
       const options = {
           method: 'GET',
