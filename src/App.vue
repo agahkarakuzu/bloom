@@ -22,7 +22,7 @@
         <div class="fluid-container footer">
           <p class="text-center">
             <span class="copy-left"><a href="//copyleft.org/">©</a></span>
-             Agah Karakuzu 2021
+             Agah Karakuzu
           </p>
         </div>
     </footer>
