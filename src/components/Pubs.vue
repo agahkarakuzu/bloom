@@ -16,7 +16,7 @@
         <b-list-group-item v-for="(work, index) in works" :key="index">
           <PubItem
             :pub="work['work-summary'][0]"
-            :doi="work['work-summary'][0]['external-ids']['external-id'][0]['external-id-value']"
+            :doi="work['work-summary'][0]['url']['value'].replace(/^https?:\/\/(dx\.)?doi\.org\//, '')"
             :show-authors="showAuthors"> <!-- Pass showAuthors prop -->
           </PubItem>
         </b-list-group-item>

@@ -7,6 +7,9 @@
         {{ pub['title']['title']['value'] }}
       </a>
     </div>
+    <div v-if="pub['url']['value']" class="mb-1">
+      <small>DOI: {{ doi }}</small>
+    </div>
     <div v-if="showAuthors"> <!-- Use the showAuthors prop -->
       <template v-for="(author, index) in authorList">
         <span v-bind:key="index" :style="styleAuthor(author)">{{ author['given'].charAt(0) }} {{ author['family'] }}</span><!--
@@ -27,7 +30,7 @@
       <span class="__dimensions_badge_embed__"
         :data-doi="doi"
         data-style="small_circle"
-        data-hide-zero-citations="true">
+        data-hide-zero-citations="false">
       </span>
       </div>
     </b-col>
@@ -42,6 +45,7 @@ export default {
   props: {
     doi: { type: String },
     pub: { type: Object },
+    authorList: { type: String },
     showAuthors: { type: Boolean }, // Accept showAuthors prop
   },
   data() {
@@ -81,12 +85,12 @@ export default {
           this.authorList = data.message.author;
         } else {
           console.warn('No authors found for this DOI:', doi);
-          this.authorList = []; // Set to empty if no authors found
+          this.authorList = 'aaa'; // Set to empty if no authors found
         }
       })
       .catch(error => {
         console.error('Error fetching data:', error);
-        this.authorList = []; // Set to empty on error
+        this.authorList = 'bbb'; // Set to empty on error
       });
     },
     styleAuthor(author) {
