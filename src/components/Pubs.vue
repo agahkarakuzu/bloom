@@ -4,16 +4,24 @@
       <b-spinner variant="primary"></b-spinner>
     </div>
     <div v-else class="container-fluid pub-content">
-      <h3>Journal Articles ({{ works.length }})</h3>
-      <b-list-group>
+      <b-row align-h="between">
+        <b-col cols="6">
+          <h3>Journal Articles ({{ works.length }})</h3>
+        </b-col>
+        <b-col cols="6" class="text-right">
+          <button @click="toggleAuthors">{{ showAuthors ? 'Hide Authors' : 'Show Authors' }}</button> <!-- Single Toggle button for all -->
+        </b-col>
+        </b-row>
+        <b-list-group>
         <b-list-group-item v-for="(work, index) in works" :key="index">
           <PubItem
-          :pub="work['work-summary'][0]"
-          :doi="work['work-summary'][0]['external-ids']['external-id'][0]['external-id-value']">
+            :pub="work['work-summary'][0]"
+            :doi="work['work-summary'][0]['external-ids']['external-id'][0]['external-id-value']"
+            :show-authors="showAuthors"> <!-- Pass showAuthors prop -->
           </PubItem>
         </b-list-group-item>
       </b-list-group>
-      </div>
+    </div>
   </div>
 </template>
 
@@ -33,12 +41,16 @@ export default {
     return {
       works: [],
       loading: true,
+      showAuthors: false, // New data property to control visibility of authors
     };
   },
   mounted() {
     this.getOrcid('0000-0001-7283-271X');  // Replace with your own ORCID !
   },
   methods: {
+    toggleAuthors() { // Method to toggle author visibility
+      this.showAuthors = !this.showAuthors;
+    },
     getOrcid(orcid) {
       const options = {
           method: 'GET',
@@ -49,9 +61,6 @@ export default {
       .then(data => {
         this.works = data.group;
         this.loading = false;
-        // Check if a DOI is available:
-        // console.log(this.works[0]['work-summary'][0]['external-ids']['external-id'][0]['external-id-value'])
-        return this.works;
       });
     }
   },

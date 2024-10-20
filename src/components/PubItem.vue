@@ -6,9 +6,8 @@
       <a class="mb-1" :href="pub['url']['value']" target="_blank">
         {{ pub['title']['title']['value'] }}
       </a>
-      <button @click="toggleAuthors">{{ showAuthors ? 'Hide Authors' : 'Show Authors' }}</button> <!-- Toggle button -->
     </div>
-    <div v-if="showAuthors"> <!-- Conditional rendering based on showAuthors -->
+    <div v-if="showAuthors"> <!-- Use the showAuthors prop -->
       <template v-for="(author, index) in authorList">
         <span v-bind:key="index" :style="styleAuthor(author)">{{ author['given'].charAt(0) }} {{ author['family'] }}</span><!--
         --><span>{{ index == authorList.length - 1 ? '.': ', ' }}</span>
@@ -40,14 +39,16 @@
 
 export default {
   name: 'Bloom',
-  props: {doi: {type: String},
-          pub: {type: Object}},
+  props: {
+    doi: { type: String },
+    pub: { type: Object },
+    showAuthors: { type: Boolean }, // Accept showAuthors prop
+  },
   data() {
     return {
       works: [],
       loading: true,
       authorList: [],
-      showAuthors: false, // New data property to control visibility
     };
   },
   mounted() {
