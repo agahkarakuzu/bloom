@@ -12,7 +12,7 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Pubs
     },
     // {
     //   path: '/about',
@@ -23,11 +23,6 @@ export default new Router({
       path: '/cv',
       name: 'CV',
       beforeEnter() {location.href = 'https://github.com/agahkarakuzu/agahkarakuzu.github.io/raw/master/karakuzu_ccv_24.pdf'}
-    },
-    {
-      path: '/pubs',
-      name: 'Pubs',
-      component: Pubs
     },
   ]
 })

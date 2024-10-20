@@ -4,7 +4,7 @@
       <b-spinner variant="primary"></b-spinner>
     </div>
     <div v-else class="container-fluid pub-content">
-      <h3>Journal Articles</h3>
+      <h3>Journal Articles ({{ works.length }})</h3>
       <b-list-group>
         <b-list-group-item v-for="(work, index) in works" :key="index">
           <PubItem
