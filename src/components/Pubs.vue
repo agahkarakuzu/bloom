@@ -32,9 +32,8 @@
       :max="100"
       height="20px"
       animated
-      class="mt-2"
-    >
-      <b-progress-bar :value="downloadProgress">
+      class="mt-2">
+      <b-progress-bar :value="downloadProgress" variant="warning" striped="striped">
         <strong>{{ Math.ceil(downloadProgress) }}%</strong>
       </b-progress-bar>
     </b-progress>
@@ -222,7 +221,7 @@ export default {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'publications.md';
+      link.download = `${authorInfo.name}-${authorInfo.surname}-publications.md`;
       link.click();
       window.URL.revokeObjectURL(url);
       this.downloadingApa = false; 

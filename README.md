@@ -1,11 +1,17 @@
-# Academic record manager
+# Orchid
 
-Your academic record is automatically populated from your [ORCID](https://orcid.org/about).
+One of the most annoying tasks in academia is keeping your academic record up to date, creating lists in a specific style requested by funding agencies, etc.
+
+Orchid automates this process.
+
+## How it works
+
+> This is the second iteration of [bloom](https://github.com/emdupre/bloom). 
+
+Your academic record is automatically populated from your [ORCID](https://orcid.org/about). That's it! 
 
 * Update `src/components/data/author-info.json` with your information.
 * Deploy the site.
-
-> This is the second iteration of [bloom](https://github.com/emdupre/bloom). 
 
 ## Build Setup
 

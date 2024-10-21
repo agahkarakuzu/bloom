@@ -9,7 +9,7 @@
       <b-collapse is-nav id="nav_collapse">
         <!--  Here are links to different routes  -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-item href="https://agah.dev"><v-icon large> mdi-home</v-icon></b-nav-item>
+          <b-nav-item :href="authorInfo.website"><v-icon large> mdi-home</v-icon></b-nav-item>
           <!--  <b-nav-item to="/pubs">Publications</b-nav-item> -->
           <!-- <b-nav-item to="/cv">CV</b-nav-item> -->
         </b-navbar-nav>
