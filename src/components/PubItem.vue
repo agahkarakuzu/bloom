@@ -7,15 +7,6 @@
         {{ pub['title']['title']['value'] }}
       </a>
     </div>
-    <div v-if="pub['url']['value']" class="mb-1">
-      <small>DOI: {{ doi }}</small>
-    </div>
-    <div v-if="showAuthors"> <!-- Use the showAuthors prop -->
-      <template v-for="(author, index) in authorList">
-        <span v-bind:key="index" :style="styleAuthor(author)">{{ author['given'].charAt(0) }} {{ author['family'] }}</span><!--
-        --><span>{{ index == authorList.length - 1 ? '.': ', ' }}</span>
-      </template>
-    </div>
     <div>
     <p v-if="pub['journal-title']" class="mb-1">
       <small>{{ pub['journal-title']['value'] }} ({{ pub['publication-date']['year']['value'] }})</small>
@@ -45,20 +36,17 @@ export default {
   props: {
     doi: { type: String },
     pub: { type: Object },
-    authorList: { type: String },
+    authorList: {type: Array},
     showAuthors: { type: Boolean }, // Accept showAuthors prop
   },
   data() {
     return {
       works: [],
       loading: true,
-      authorList: [],
     };
   },
   mounted() {
-    this.getCrossref(this.doi);
-    // Check DOI properly passed to child component
-    // console.log(this.doi);
+    //this.getCrossref(this.doi);
     let dimensionScript = document.createElement('script')
     dimensionScript.setAttribute('src', 'https://badge.dimensions.ai/badge.js')
     document.head.appendChild(dimensionScript)
@@ -66,32 +54,6 @@ export default {
   methods: {
     toggleAuthors() { // New method to toggle author visibility
       this.showAuthors = !this.showAuthors;
-    },
-    getCrossref(doi) {
-      const options = {
-          method: 'GET',
-          headers: new Headers({'accept': 'application/json'})
-      };
-      fetch(`https://api.crossref.org/works/${doi}`, options)
-      .then((resp) => {
-        if (!resp.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return resp.json();
-      })
-      .then(data => {
-        // Check if authors exist and are in the expected format
-        if (data.message && Array.isArray(data.message.author)) {
-          this.authorList = data.message.author;
-        } else {
-          console.warn('No authors found for this DOI:', doi);
-          this.authorList = 'aaa'; // Set to empty if no authors found
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-        this.authorList = 'bbb'; // Set to empty on error
-      });
     },
     styleAuthor(author) {
       var style = {}; // Replace with your own family name !
