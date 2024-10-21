@@ -12,6 +12,7 @@ Your academic record is automatically populated from your [ORCID](https://orcid.
 
 * Update `src/components/data/author-info.json` with your information.
 * Deploy the site.
+* Updates to your ORCID profile will be reflected on the site automatically & dynamically.
 
 ## Build Setup
 
