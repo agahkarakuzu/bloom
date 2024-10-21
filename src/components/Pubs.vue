@@ -4,6 +4,21 @@
       <b-spinner variant="primary"></b-spinner>
     </div>
     <div v-else class="container-fluid pub-content">
+    <v-btn @click="downloadApaMarkdown">Download APA Citations (Markdown)
+    </v-btn><b-spinner v-if="downloadingApa" small variant="primary"></b-spinner>
+    <b-progress
+      v-if="downloadingApa"
+      :value="downloadProgress"
+      :max="100"
+      height="20px"
+      striped
+      animated
+      class="mt-2"
+    >
+      <b-progress-bar :value="downloadProgress">
+        <strong>{{ Math.ceil(downloadProgress) }}%</strong>
+      </b-progress-bar>
+    </b-progress>
       <b-row align="left">
         <b-col cols="12">
           <h4>
@@ -84,7 +99,9 @@ export default {
       authorLists: [],
       abstracts: [],
       loading: true,
+      downloadProgress: 0,
       fetchingIndex: null,
+      downloadingApa: false,
       panel: [], // Initialize the panel data property
     };
   },
@@ -113,7 +130,6 @@ export default {
         }
         const data = await response.json();
 
-        // Check for the existence of message, author, and abstract properties
         const authors = (data.message && data.message.author) ? data.message.author : [];
         const abstract = (data.message && data.message.abstract) ? data.message.abstract : null;
 
@@ -143,6 +159,54 @@ export default {
         this.loading = false;
       }
     },
+    async downloadApaMarkdown() {
+      this.downloadingApa = true;
+      this.downloadProgress = 0;
+      let markdownContent = '# Publications\n\n';
+
+      const headers = {
+        Accept: `text/x-bibliography; style=apa`
+      };
+      const totalWorks = this.works.length;
+      let processedWorks = 0;
+
+      for (const type of ['journal-article', 'conference-paper', 'preprint']) {
+        const typeLabel = type === 'journal-article' ? 'Journal Articles' : type === 'conference-paper' ? 'Conference Papers' : 'Preprints';
+        let typeSection = `## ${typeLabel}\n\n`;
+
+        const filteredWorks = this.works.filter(work => work['work-summary'][0]['type'] === type);
+        if (filteredWorks.length === 0) continue;
+
+        for (const work of filteredWorks) {
+          const doi = this.getDoi(work);
+          try {
+            const url = `https://doi.org/${doi}`;
+            console.log(url);
+            const response = await fetch(url, { headers });
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const citation = await response.text();
+            typeSection += `- ${citation}\n`;
+          } catch (error) {
+            console.error(`Error fetching APA citation for ${doi}:`, error);
+          }
+
+          processedWorks++;
+          this.downloadProgress = (processedWorks / totalWorks) * 100;
+        }
+        markdownContent += `${typeSection}\n`;
+      }
+
+      const blob = new Blob([markdownContent], { type: 'text/markdown' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'publications.md';
+      link.click();
+      window.URL.revokeObjectURL(url);
+      this.downloadingApa = false; 
+    },
     formatAuthors(authors) {
       const boldAuthors = ['Karakuzu'];
       return authors
@@ -156,26 +220,26 @@ export default {
       return work['work-summary'][0]['url']['value'].replace(/^https?:\/\/(dx\.)?doi\.org\//, '');
     },
     encodeDoiForBadge(doi) {
-        switch (doi) {
-    case 'journal-article':
-      return 'Article';
-    case 'conference-paper':
-      return 'Conference Paper';
-    case 'preprint':
-      return 'Preprint';
-    default:
+      switch (doi) {
+        case 'journal-article':
+          return 'Article';
+        case 'conference-paper':
+          return 'Conference Paper';
+        case 'preprint':
+          return 'Preprint';
+        default:
           return 'Other';
       }
     },
     encodeColor(inp) {
-        switch (inp) {
-    case 'journal-article':
-      return '005149';
-    case 'conference-paper':
-      return 'blue';
-    case 'preprint':
-      return '2B2B2B';
-    default:
+      switch (inp) {
+        case 'journal-article':
+          return '005149';
+        case 'conference-paper':
+          return 'blue';
+        case 'preprint':
+          return '2B2B2B';
+        default:
           return 'gray';
       }
     },
