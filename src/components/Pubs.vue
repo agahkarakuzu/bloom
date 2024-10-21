@@ -4,14 +4,33 @@
       <b-spinner variant="primary"></b-spinner>
     </div>
     <div v-else class="container-fluid pub-content">
-    <v-btn @click="downloadApaMarkdown">Download APA Citations (Markdown)
-    </v-btn><b-spinner v-if="downloadingApa" small variant="primary"></b-spinner>
-    <b-progress
+      <b-row align="left">
+        <b-col cols="8">
+          <h4>
+            {{ typeCounts.journal }} Journal Articles, 
+            {{ typeCounts.conference }} Conference Papers, 
+            {{ typeCounts.preprint }} Preprints
+          </h4>
+        </b-col>
+        <b-col cols="4" class="d-flex justify-content-end align-items-center">
+          <v-btn @click="downloadApaMarkdown"> <v-icon>mdi-language-markdown</v-icon> Download Citation List
+          </v-btn>
+      <b-dropdown id="dropdown-right" right :text="selectedStyle" variant="warning" class="m-1">
+        <b-dropdown-item @click="selectStyle('apa')">APA</b-dropdown-item>
+        <b-dropdown-item @click="selectStyle('ieee')">IEEE</b-dropdown-item>
+        <b-dropdown-item @click="selectStyle('nature')">Nature</b-dropdown-item>
+        <b-dropdown-item @click="selectStyle('modern-language-association')">MLA</b-dropdown-item>
+        <b-dropdown-item @click="selectStyle('chicago-author-date')">Chicago</b-dropdown-item>
+        <b-dropdown-item @click="selectStyle('vancouver')">Vancouver</b-dropdown-item>
+        <b-dropdown-item @click="selectStyle('harvard')">Harvard</b-dropdown-item>
+      </b-dropdown>
+        </b-col>
+      </b-row>
+      <b-progress
       v-if="downloadingApa"
       :value="downloadProgress"
       :max="100"
       height="20px"
-      striped
       animated
       class="mt-2"
     >
@@ -19,15 +38,6 @@
         <strong>{{ Math.ceil(downloadProgress) }}%</strong>
       </b-progress-bar>
     </b-progress>
-      <b-row align="left">
-        <b-col cols="12">
-          <h4>
-            {{ typeCounts.journal }} Journal Articles, 
-            {{ typeCounts.conference }} Conference Papers, 
-            {{ typeCounts.preprint }} Preprints
-          </h4>
-        </b-col>
-      </b-row>
       <b-list-group>
         <b-list-group-item v-for="(work, index) in works" :key="index">
           <b-row>
@@ -87,6 +97,7 @@
 <script>
 import Vue from 'vue';
 import PubItem from './PubItem';
+import authorInfo from './data/author-info.json';
 
 export default {
   name: 'Bloom',
@@ -100,15 +111,21 @@ export default {
       abstracts: [],
       loading: true,
       downloadProgress: 0,
+      selectedStyle: 'nature',
       fetchingIndex: null,
       downloadingApa: false,
-      panel: [], // Initialize the panel data property
+      panel: [], 
+      authorInfo: authorInfo,
     };
   },
   mounted() {
-    this.getOrcid('0000-0001-7283-271X');
+    // this.getOrcid('0000-0001-7283-271X');
+    this.getOrcid(authorInfo.orcid);
   },
   methods: {
+    selectStyle(style) {
+      this.selectedStyle = style;
+    },
     async fetchAuthorList(index, doi) {
       if (this.authorLists[index]) {
         this.$set(this.authorLists, index, null);
@@ -165,7 +182,7 @@ export default {
       let markdownContent = '# Publications\n\n';
 
       const headers = {
-        Accept: `text/x-bibliography; style=apa`
+        Accept: `text/x-bibliography; style=${this.selectedStyle}`
       };
       const totalWorks = this.works.length;
       let processedWorks = 0;
@@ -176,6 +193,8 @@ export default {
 
         const filteredWorks = this.works.filter(work => work['work-summary'][0]['type'] === type);
         if (filteredWorks.length === 0) continue;
+        
+        let citationNumber = 1;
 
         for (const work of filteredWorks) {
           const doi = this.getDoi(work);
@@ -187,9 +206,10 @@ export default {
               throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const citation = await response.text();
-            typeSection += `- ${citation}\n`;
+            typeSection += `${citationNumber}. ${citation.replace(/^\[?\d+\]?\.\s*/, "")}\n`;
+            citationNumber++;
           } catch (error) {
-            console.error(`Error fetching APA citation for ${doi}:`, error);
+            console.error(`Error fetching citation for ${doi}:`, error);
           }
 
           processedWorks++;
@@ -208,7 +228,7 @@ export default {
       this.downloadingApa = false; 
     },
     formatAuthors(authors) {
-      const boldAuthors = ['Karakuzu'];
+      const boldAuthors = [authorInfo.surname];
       return authors
         .map(author => {
           const name = `${author.given} ${author.family}`;

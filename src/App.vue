@@ -2,7 +2,9 @@
   <div id="app">
     <b-navbar toggleable="md" type="light" variant="light">
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-      <b-navbar-brand to="/" exact> Agah Karakuzu - Publications </b-navbar-brand>
+      <v-icon>mdi-book-open-page-variant</v-icon> &nbsp;&nbsp;
+      <b-navbar-brand to="/" exact> <a v-if="authorInfo.orcid" :href="'https://orcid.org/' + authorInfo.orcid" target="_blank"><img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /> {{ authorInfo.orcid }} </a> &nbsp;&nbsp; {{ authorInfo.name }} {{ authorInfo.surname }}
+      </b-navbar-brand>
 
       <b-collapse is-nav id="nav_collapse">
         <!--  Here are links to different routes  -->
@@ -22,7 +24,11 @@
         <div class="fluid-container footer">
           <p class="text-center">
             <span class="copy-left"><a href="//copyleft.org/">©</a></span>
-             Agah Karakuzu
+            {{ authorInfo.name }} {{ authorInfo.surname }}
+            <a v-if="authorInfo.orcid" :href="'https://orcid.org/' + authorInfo.orcid" target="_blank">
+              <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" />
+              {{ authorInfo.orcid }}
+            </a>
           </p>
         </div>
     </footer>
@@ -33,9 +39,15 @@
 import Vue from 'vue';
 import BootstrapVue from 'bootstrap-vue';
 Vue.use(BootstrapVue);
+import authorInfo from '@/components/data/author-info.json';
 
 export default {
-  name: 'app'
+  name: 'app',
+    data() {
+    return {
+      authorInfo
+    };
+  }
 }
 </script>
 
