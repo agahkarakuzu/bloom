@@ -1,17 +1,11 @@
-# bloom :hibiscus:
+# Academic record manager
 
-🚧 This repository is currently under construction 🚧
+Your academic record is automatically populated from your [ORCID](https://orcid.org/about).
 
-Please check back soon.
+* Update `src/components/data/author-info.json` with your information.
+* Deploy the site.
 
----
-
-This (will be) a template repository for an academic website,
-where your publications are automatically populated from an [ORCID](https://orcid.org/about).
-
-> A Vue.js project
-
-Built using [BootstrapVue](https://bootstrap-vue.js.org/), [Font Awesome](http://fontawesome.io/), and [Academicons](http://jpswalsh.github.io/academicons/).
+> This is the second iteration of [bloom](https://github.com/emdupre/bloom). 
 
 ## Build Setup
 
@@ -32,4 +26,3 @@ npm run build --report
 For detailed explanation on how things work,
 checkout the [guide](http://vuejs-templates.github.io/webpack/) and
 [docs for vue-loader](http://vuejs.github.io/vue-loader).
-
